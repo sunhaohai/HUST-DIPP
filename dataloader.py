@@ -5,6 +5,8 @@ from six.moves import cPickle as pickle
 import numpy as np
 import os
 import platform
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def load_pickle(f):
     version = platform.python_version_tuple()
@@ -80,3 +82,29 @@ def get_CIFAR10_data(cifar10_dir, num_training=49000, num_validation=1000, num_t
     X_dev = np.hstack([X_dev, np.ones((X_dev.shape[0], 1))])
     
     return X_train, y_train, X_val, y_val, X_test, y_test, X_dev, y_dev
+
+def get_fetch_20newsgroups_tfidf(categories, data_root=None):
+    """获取20分类的tfidf向量数据
+    input:
+      categories: 获取的类别数据，type=list
+      data_root: 数据目录，None的时候下载
+    output:
+      x_train: 训练向量
+      y_train: 训练labels
+      x_test: 测试向量
+      y_test: 测试labels
+    """
+    newsgroups_train = fetch_20newsgroups(data_home=data_root, subset='train',  categories=categories)
+    newsgroups_test = fetch_20newsgroups(data_home=data_root, subset='test',  categories=categories)
+    num_train = len(newsgroups_train.data)
+    num_test  = len(newsgroups_test.data)
+
+    vectorizer = TfidfVectorizer(max_features=20)
+
+    X = vectorizer.fit_transform( newsgroups_train.data + newsgroups_test.data )
+    X_train = X[0:num_train, :]
+    X_test = X[num_train:num_train+num_test,:]
+
+    Y_train = newsgroups_train.target
+    Y_test = newsgroups_test.target
+    return X_train, Y_train, X_test, Y_test 
