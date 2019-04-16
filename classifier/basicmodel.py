@@ -40,5 +40,5 @@ class BasicModel(object):
         index = 0
         for layer in self.layers:
             if hasattr(layer, 'parameters'):
-                layer.parameters = dictionary['layers'][index]
+                layer.parameters = dictionary['parameters'][index]
                 index += 1

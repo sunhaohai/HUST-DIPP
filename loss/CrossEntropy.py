@@ -23,7 +23,7 @@ class CrossEntropy(object):
         self.grad = self._softmax(x)
         return self.s
 
-    def backprop(self, back_layer=None, optimizer=None):
+    def backprop(self, back_layer=None, optimizer=None, l2_reg_lambda=0):
         return self.grad
 
     def _softmax(self, x):

@@ -20,7 +20,7 @@ class Sigmoid(object):
         self.grad = self.z * (1 - self.z)
         return self.z
     
-    def backprop(self, back_layer, optimizer=None):
+    def backprop(self, back_layer, optimizer=None, l2_reg_lambda=0):
         self.grad = back_layer.grad * self.grad
         return self.grad
 
@@ -42,7 +42,7 @@ class ReLU(object):
         self.grad = np.where(x < 0, 0, 1)
         return self.z
 
-    def backprop(self, back_layer, optimizer=None):
+    def backprop(self, back_layer, optimizer=None, l2_reg_lambda=0):
         self.grad = back_layer.grad * self.grad
         return self.grad
 

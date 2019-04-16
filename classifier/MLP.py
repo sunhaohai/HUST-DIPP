@@ -22,16 +22,20 @@ class MLP(BasicModel):
         self.layers = [
             Linear(20, 128),
             ReLU(),
-            Dropout(0.2),
+            Dropout(0.5),
             Linear(128, 256),
             ReLU(),
             Dropout(0.5),
             Linear(256, 128),
             Sigmoid(),
-            Dropout(0.2),
+            Dropout(0.5),
             Linear(128, 4),
             self.LossFunc
         ]
+        self.parameters = {}
+        for l in self.layers:
+            if hasattr(l, 'parameters'):
+                self.parameters[id(l)] = l.parameters
 
     def forward(self, x):
         tmp = x
@@ -45,22 +49,28 @@ class MLP(BasicModel):
         self._loss = self.LossFunc.loss(x, y)
         return self._loss
 
-    def train(self, x, y, optimizer):
+    def train(self, x, y, optimizer, l2_reg_lambda=0):
         """模型训练
         x: 输入 
         y: label
         optimizer: 优化器
         """
+        for layer in self.layers:
+            if str(layer) == "Dropout":
+                layer.open = True
         self.loss(x, y)
         self.update(self._loss, self.acc)
         for i in range(len(self.layers)):
             if i == 0:
                 self.layers[-i-1].backprop()
-            self.layers[-i-1].backprop(self.layers[-i], optimizer)
+            self.layers[-i-1].backprop(self.layers[-i], optimizer, l2_reg_lambda)
 
     def predict(self, x):
         """预测
         x: 输入
         """
+        for layer in self.layers:
+            if str(layer) == "Dropout":
+                layer.open = False
         x = self.forward(x)
         return np.argmax(x, axis=1)

@@ -21,9 +21,11 @@ class Dropout(object):
             self.z = np.multiply(x, mask)
             return self.z
         else:
+            mask = np.ones((1, x.shape[1]))
+            self.grad = mask.repeat(x.shape[0], axis=0)
             return x
 
-    def backprop(self, back_layer, optimizer=None):
+    def backprop(self, back_layer, optimizer=None, l2_reg_lambda=0):
         if self.open:
             self.grad = back_layer.grad * self.grad
             return self.grad
