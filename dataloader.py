@@ -107,4 +107,10 @@ def get_fetch_20newsgroups_tfidf(categories, data_root=None):
 
     Y_train = newsgroups_train.target
     Y_test = newsgroups_test.target
-    return X_train, Y_train, X_test, Y_test 
+    return X_train.A, Y_train, X_test.A, Y_test 
+
+if __name__ == '__main__':
+    catagories = ['alt.atheism', 'talk.religion.misc', 'comp.graphics', 'sci.space']
+    dataroot = './datasets/20newsbydate'
+    X_train, Y_train, X_test, Y_test = get_fetch_20newsgroups_tfidf(catagories, dataroot)  
+    pickle.dump((X_train, Y_train, X_test, Y_test), open('./datasets/20_4_train.pkl', 'wb'))

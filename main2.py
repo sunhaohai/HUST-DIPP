@@ -1,41 +1,31 @@
 #! -*-coding:utf8-*-
 import numpy as np
-from layers.linear import Linear
-from loss.CrossEntropy import CrossEntropy
+from dataloader import get_fetch_20newsgroups_tfidf
+from classifier.MLP import MLP
+from optimizer.SGD import SGD
 
-step = 1000
+catagories = ['alt.atheism', 'talk.religion.misc', 'comp.graphics', 'sci.space']
+dataroot = './datasets/20newsbydate'
 
+X_train, Y_train, X_test, Y_test = get_fetch_20newsgroups_tfidf(None, dataroot)
 
-class Model:
-    def __init__(self):
-        self.layers = [
-            Linear(20, 30),
-            Linear(30, 40),
-            Linear(40, 20),
-            CrossEntropy()
-        ]
+layer_size = [[X_train.shape[1], 128], [128, 20]]
+model = MLP(layer_size)
+batch_size = 200
+step = 30000
+lr = 10
+optimazier = SGD(lr=lr)
 
-    def forward(self, x):
-        for layer in self.layers:
-            x = layer.forward(x)
-        return x
+for i in range(step):
+    index = np.random.choice(X_train.shape[0], size=batch_size)
+    rand_x = X_train[index]
+    rand_y = Y_train[index]
+    if i%10 == 1:
+        loss = model.loss(rand_x, rand_y)
+        acc = model.acc
+        print('Step: ', i, '|', 'Loss: ', loss, '|', 'acc: ', acc)
+    model.train(rand_x, rand_y, optimazier)
 
-    def backward(self, loss):
-        pass
-
-    def step(self, x):
-        loss = self.forward(x)
-        self.backward(loss)
-
-
-def main():
-    model = Model()
-    for step_num in range(step):
-        inputs = None
-        labels = None
-        model.layers[-1].labels = labels
-        model.step(inputs)
-
-
-if __name__ == '__main':
-    main()
+print('Eval===>')
+loss = model.loss(X_test, Y_test)
+print('Acc: ', model.acc, 'Loss: ', loss)
