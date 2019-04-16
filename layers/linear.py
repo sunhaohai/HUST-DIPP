@@ -4,14 +4,14 @@ import numpy as np
 
 class Linear(object):
     def __repr__(self):
-        return "linear"
+        return "Linear"
 
     def __init__(self, input, output):
 
         self.parameters = [
             np.random.randn(input, output),
             np.random.randn(1, output)
-            ]
+        ]
 
         self.z = None # 这一层的输出
         self.grad = None

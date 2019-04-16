@@ -2,6 +2,7 @@
 
 import numpy as np 
 
+
 class CrossEntropy(object):
     def __repr__(self):
         return "CrossEntropy"

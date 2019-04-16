@@ -2,26 +2,36 @@
 """多层线性分类器"""
 import numpy as np
 from layers.linear import Linear
+from layers.dropout import Dropout
 from loss.CrossEntropy import CrossEntropy
-from function.activationFunc import Sigmoid
+from function.activationFunc import Sigmoid, ReLU
 from optimizer.SGD import SGD
+from classifier.basicmodel import BasicModel
 
-class MLP(object):
+
+class MLP(BasicModel):
     """多层线性分类器"""
-    def __init__(self, layer_size):
+    def __init__(self):
         """
         hidden_layer_num: 隐藏层数目
         hidden_size: 隐藏层大小
         classes_num: 分类数目
         """
+        super(MLP, self).__init__()
         self.LossFunc = CrossEntropy()
-        self.layers = []
-        for l in layer_size:
-            self.layers.append(Linear(l[0], l[1]))
-            self.layers.append(Sigmoid())
-        self.layers.append(self.LossFunc)
-        self._loss = None
-        self.acc = None
+        self.layers = [
+            Linear(20, 128),
+            ReLU(),
+            Dropout(0.2),
+            Linear(128, 256),
+            ReLU(),
+            Dropout(0.5),
+            Linear(256, 128),
+            Sigmoid(),
+            Dropout(0.2),
+            Linear(128, 4),
+            self.LossFunc
+        ]
 
     def forward(self, x):
         tmp = x
@@ -42,13 +52,12 @@ class MLP(object):
         optimizer: 优化器
         """
         self.loss(x, y)
+        self.update(self._loss, self.acc)
         for i in range(len(self.layers)):
             if i == 0:
                 self.layers[-i-1].backprop()
             self.layers[-i-1].backprop(self.layers[-i], optimizer)
-            #print(self.layers[-i-1].grad)
-        
-    
+
     def predict(self, x):
         """预测
         x: 输入
