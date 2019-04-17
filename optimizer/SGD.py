@@ -1,6 +1,7 @@
 #! -*- coding:utf8 -*-
 import numpy as np
 
+
 class SGD(object):
     def __init__(self, parameters, lr=0.001, momentum=0, gamma=0.001, method='fixed'):
         self.lr = lr

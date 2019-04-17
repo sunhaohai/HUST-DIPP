@@ -7,9 +7,9 @@
 * main_1: 实验主文件
 
 ## models
-* self.layers: [Linear, ReLU, Linear, softmax]
+* self.layers: [Linear, ReLU, Batchnorm, Dropout]
 * layers:
     * layers.grad
-    * layers.backward (function)
-    * layers.forward (function)
+    * layers.backprop
+    * layers.forward
     * layers.parameters
