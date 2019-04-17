@@ -30,7 +30,7 @@ class Linear(object):
     def backprop(self, back_layer, optimizer=None, l2_reg_lambda=0):
         self.grad = np.dot(back_layer.grad, self.parameters[0].transpose())
         self.dw = np.dot(self.dw, back_layer.grad) + l2_reg_lambda * self.parameters[0]
-        self.db = np.sum(back_layer.grad, axis=0)
+        self.db = np.sum(back_layer.grad, axis=0) 
         if optimizer:
             self.parameters[0] = optimizer.update_parameter(self.parameters[0], self.dw, self.batch_size, id(self), 0)
             self.parameters[1] = optimizer.update_parameter(self.parameters[1], self.db, self.batch_size, id(self), 1)
