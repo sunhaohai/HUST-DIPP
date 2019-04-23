@@ -3,9 +3,9 @@
 import numpy as np
 from layers.linear import Linear
 from layers.dropout import Dropout
+from layers.batch_norm import Batchnorm
 from loss.CrossEntropy import CrossEntropy
 from function.activationFunc import Sigmoid, ReLU
-from optimizer.SGD import SGD
 from classifier.basicmodel import BasicModel
 
 
@@ -20,16 +20,20 @@ class MLP(BasicModel):
         super(MLP, self).__init__()
         self.LossFunc = CrossEntropy()
         self.layers = [
-            Linear(20, 128),
+            Linear(20, 32),
+            Batchnorm(32),
             ReLU(),
             Dropout(0.5),
-            Linear(128, 256),
+            Linear(32, 64),
+            Batchnorm(64),
             ReLU(),
             Dropout(0.5),
-            Linear(256, 128),
+            Linear(64, 32),
+            Batchnorm(32),
+            ReLU(),
+            Dropout(0.5),
+            Linear(32, 4),
             Sigmoid(),
-            Dropout(0.5),
-            Linear(128, 4),
             self.LossFunc
         ]
         self.parameters = {}
@@ -58,6 +62,8 @@ class MLP(BasicModel):
         for layer in self.layers:
             if str(layer) == "Dropout":
                 layer.open = True
+            if str(layer) == "Batchnorm":
+                layer.train = True
         self.loss(x, y)
         self.update(self._loss, self.acc)
         for i in range(len(self.layers)):
@@ -72,5 +78,7 @@ class MLP(BasicModel):
         for layer in self.layers:
             if str(layer) == "Dropout":
                 layer.open = False
+            if str(layer) == "Batchnorm":
+                layer.train = False
         x = self.forward(x)
         return np.argmax(x, axis=1)
