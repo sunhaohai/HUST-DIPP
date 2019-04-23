@@ -3,9 +3,9 @@
 import numpy as np 
 
 
-class CrossEntropy(object):
+class MSELoss(object):
     def __repr__(self):
-        return "CrossEntropy"
+        return "MSELoss"
 
     def __init__(self):
         self.z = None
@@ -14,8 +14,10 @@ class CrossEntropy(object):
         self.grad = None
 
     def loss(self, x, y):
-        self._loss = np.sum(-np.log(self.s[range(x.shape[0]), list(y)])) / x.shape[0]
-        self.grad[range(x.shape[0]), list(y)] -= 1
+        new_y = np.zeros(x.shape)
+        new_y[range(x.shape[0]), list(y)] = 1
+        self._loss = np.sum(np.square(x - new_y) / 2.0) / x.shape[0]
+        self.grad = x - new_y
         return self._loss
 
     def forward(self, x):

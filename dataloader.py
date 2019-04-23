@@ -83,7 +83,8 @@ def get_CIFAR10_data(cifar10_dir, num_training=49000, num_validation=1000, num_t
     
     return X_train, y_train, X_val, y_val, X_test, y_test, X_dev, y_dev
 
-def get_fetch_20newsgroups_tfidf(categories, data_root=None):
+
+def get_fetch_20newsgroups_tfidf(categories, data_root=None, max_features=20):
     """获取20分类的tfidf向量数据
     input:
       categories: 获取的类别数据，type=list
@@ -99,7 +100,7 @@ def get_fetch_20newsgroups_tfidf(categories, data_root=None):
     num_train = len(newsgroups_train.data)
     num_test  = len(newsgroups_test.data)
 
-    vectorizer = TfidfVectorizer(max_features=20)
+    vectorizer = TfidfVectorizer(max_features=max_features)
 
     X = vectorizer.fit_transform( newsgroups_train.data + newsgroups_test.data )
     X_train = X[0:num_train, :]

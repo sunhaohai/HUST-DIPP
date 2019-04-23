@@ -3,7 +3,7 @@ import numpy as np
 
 
 class SGD(object):
-    def __init__(self, parameters, lr=0.001, momentum=0, gamma=0.999, method='fixed', min_lr=1e-10, nesterov=False):
+    def __init__(self, parameters, lr=0.001, momentum=0, gamma=0.99999, method='fixed', min_lr=1e-3, nesterov=False):
         self.lr = lr
         self.momentum = momentum
         self.gamma = gamma

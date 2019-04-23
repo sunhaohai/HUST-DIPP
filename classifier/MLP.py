@@ -5,6 +5,8 @@ from layers.linear import Linear
 from layers.dropout import Dropout
 from layers.batch_norm import Batchnorm
 from loss.CrossEntropy import CrossEntropy
+from loss.MSELoss import MSELoss
+from loss.FocalLoss import FocalLoss
 from function.activationFunc import Sigmoid, ReLU
 from classifier.basicmodel import BasicModel
 
@@ -18,21 +20,21 @@ class MLP(BasicModel):
         classes_num: 分类数目
         """
         super(MLP, self).__init__()
-        self.LossFunc = CrossEntropy()
+        self.LossFunc = FocalLoss()
         self.layers = [
-            Linear(20, 32),
-            Batchnorm(32),
+            Linear(256, 256),
+            Batchnorm(256),
             ReLU(),
             Dropout(0.5),
-            Linear(32, 64),
-            Batchnorm(64),
+            Linear(256, 128),
+            Batchnorm(128),
             ReLU(),
             Dropout(0.5),
-            Linear(64, 32),
-            Batchnorm(32),
+            Linear(128, 128),
+            Batchnorm(128),
             ReLU(),
             Dropout(0.5),
-            Linear(32, 4),
+            Linear(128, 4),
             Sigmoid(),
             self.LossFunc
         ]
